@@ -34,7 +34,12 @@
     "psr-4": {
       "Waryor\\Desensitize\\": "src"
     }
-  },
+  }, 
+  "autoload-dev": {
+        "psr-4": {
+            "Waryor\\Desensitize\\Tests\\": "tests/"
+        }
+    },
   "extra": {
     "laravel": {
       "providers": [
