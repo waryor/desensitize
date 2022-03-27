@@ -2,7 +2,7 @@
 
 namespace Waryor\Desensitize;
 
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Matching\UriValidator;
 use Waryor\Desensitize\Validator\DesensitizedUriValidator;
 
