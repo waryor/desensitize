@@ -40,6 +40,7 @@
             "Waryor\\Desensitize\\Tests\\": "tests/"
         }
     },
+
   "extra": {
     "laravel": {
       "providers": [
@@ -49,7 +50,7 @@
   },
   "scripts": {
     "test" : [
-      "@php ./vendor/bin/phpunit -c ./phpunit.xml --testdox"
+      "@php ./vendor/bin/phpunit --testdox"
     ]
   },
   "minimum-stability": "stable",
