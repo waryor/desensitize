@@ -11,6 +11,7 @@ jobs:
     name: tests
 
     steps:
+      - uses: actions/checkout@v2
       - name: Install composer deps
         run: composer install --prefer-dist --no-progress --no-suggest
 
