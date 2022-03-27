@@ -17,7 +17,7 @@ class Router extends \Illuminate\Routing\Router
      * @param  array|string  $methods
      * @param  string  $uri
      * @param  mixed  $action
-     * @return \Illuminate\Routing\Route
+     * @return Route
      */
     public function newRoute($methods, $uri, $action)
     {
@@ -53,6 +53,64 @@ class Router extends \Illuminate\Routing\Router
             $route->getAction(),
             $prependExistingPrefix = false
         ));
+    }
+
+    /**
+     * Register a new GET route with the router.
+     *
+     * @param  string  $uri
+     * @param  array|string|callable|null  $action
+     * @return Route
+     */
+    public function get($uri, $action = null)
+    {
+        return $this->addRoute(['GET', 'HEAD'], $uri, $action);
+    }
+
+    /**
+     * Add a route to the underlying route collection.
+     *
+     * @param  array|string  $methods
+     * @param  string  $uri
+     * @param  array|string|callable|null  $action
+     * @return Route
+     */
+    public function addRoute($methods, $uri, $action)
+    {
+        return $this->routes->add($this->createRoute($methods, $uri, $action));
+    }
+
+    /**
+     * Create a new route instance.
+     *
+     * @param  array|string  $methods
+     * @param  string  $uri
+     * @param  mixed  $action
+     * @return Route
+     */
+    protected function createRoute($methods, $uri, $action)
+    {
+        // If the route is routing to a controller we will parse the route action into
+        // an acceptable array format before registering it and creating this route
+        // instance itself. We need to build the Closure that will call this out.
+        if ($this->actionReferencesController($action)) {
+            $action = $this->convertToControllerAction($action);
+        }
+
+        $route = $this->newRoute(
+            $methods, $this->prefix($uri), $action
+        );
+
+        // If we have groups that need to be merged, we will merge them now after this
+        // route has already been created and is ready to go. After we're done with
+        // the merge we will be ready to return the route back out to the caller.
+        if ($this->hasGroupStack()) {
+            $this->mergeGroupAttributesIntoRoute($route);
+        }
+
+        $this->addWhereClausesToRoute($route);
+
+        return $route;
     }
 
     /**

@@ -34,7 +34,7 @@ class DesensitizedUriValidator implements ValidatorInterface
      * @param Request $request
      * @return bool|int
      */
-    public function matches(Route $route, Request $request)
+    public function matches(Route $route, Request $request, &$matches = null)
     {
         $path = $request->path() == '/' ? '/' : '/' . $request->path();
 
@@ -43,10 +43,33 @@ class DesensitizedUriValidator implements ValidatorInterface
             $path = $this->basePath . $path;
         }
 
-        $path = strtolower($path);
-        $regex = $route->getCompiled()->getRegex();
-        $regex = str_replace('^', "^{$this->basePath}", $regex);
+        if(!str_starts_with($path, '/'))
+        {
+            $path = '/' . $path;
+        }
 
-        return preg_match(preg_replace('/$/','i', $regex), rawurldecode($path));
+        $path = strtolower($path);
+
+        $regex = $route->getCompiled()->getRegex();
+
+        $regexEncoded = str_replace('-', '\-', $this->basePath);
+
+        $regex = str_replace('^', "{$regexEncoded}", $regex);
+
+        $regex = preg_replace('/$/','i', $regex);
+
+        $val =  preg_match($regex, $path, $matches);
+
+        if($val == 0)
+        {
+            //dd("did not match: $regex -> $path");
+        }
+
+        return $val;
+    }
+
+    public function getBasePath() : string
+    {
+        return $this->basePath;
     }
 }

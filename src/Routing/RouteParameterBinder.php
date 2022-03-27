@@ -2,6 +2,8 @@
 
 namespace Waryor\Desensitize\Routing;
 
+use Waryor\Desensitize\Validator\DesensitizedUriValidator;
+
 class RouteParameterBinder extends \Illuminate\Routing\RouteParameterBinder
 {
     /**
@@ -12,10 +14,15 @@ class RouteParameterBinder extends \Illuminate\Routing\RouteParameterBinder
      */
     protected function bindPathParameters($request)
     {
-        $path = '/'.ltrim($request->decodedPath(), '/');
-
-        preg_match(preg_replace('/$/','i', $this->route->compiled->getRegex()), $path, $matches);
-
+        $validator = $this->route->getUriValidator();
+        $validator->matches($this->route, $request, $matches);
         return $this->matchToKeys(array_slice($matches, 1));
     }
+
+    /**
+     * The route instance.
+     *
+     * @var Route
+     */
+    protected $route;
 }

@@ -2,8 +2,8 @@
 
 namespace Waryor\Desensitize;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Routing\Matching\UriValidator;
+use Waryor\Desensitize\Routing\Route;
 use Waryor\Desensitize\Validator\DesensitizedUriValidator;
 
 /**
@@ -19,10 +19,12 @@ class Desensitize
      */
     public static function initialize(string $basePath = '')
     {
-        $validators = Route::getValidators();
-        $validators[] = new DesensitizedUriValidator($basePath);
-        Route::$validators = array_filter($validators, function($validator) {
-            return get_class($validator) != UriValidator::class;
-        });
+        if(Route::$validators != null)
+        {
+            Route::$validators = array_filter(Route::$validators, function($validator) {
+                return (get_class($validator) != UriValidator::class) && (get_class($validator) != DesensitizedUriValidator::class);
+            });
+        }
+        Route::$validators[] = new DesensitizedUriValidator($basePath);
     }
 }
