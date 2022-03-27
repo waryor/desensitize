@@ -1,3 +1,5 @@
+[![Tests](https://github.com/waryor/desensitize/actions/workflows/tests.yml/badge.svg)](https://github.com/waryor/desensitize/actions/workflows/tests.yml)
+
 ## Desensitize
 
 The package provides an easy way to desensitize your routes in your Laravel application. In short, Desensitize makes your routes case-insensitive, so you can access any of your routes whether they are lowercase, uppercase, or both.
