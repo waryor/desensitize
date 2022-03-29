@@ -2,7 +2,7 @@
 ![Packagist Stars](https://img.shields.io/packagist/stars/waryor/desensitize?label=packagist-stars)
 
 
-#### Build:
+#### Tests:
 [![Tests](https://github.com/waryor/desensitize/actions/workflows/tests.yml/badge.svg)](https://github.com/waryor/desensitize/actions/workflows/tests.yml)
 
 
