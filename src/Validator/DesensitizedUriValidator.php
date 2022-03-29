@@ -34,46 +34,29 @@ class DesensitizedUriValidator implements ValidatorInterface
      * @param Request $request
      * @return bool|int
      */
-    public function matches(Route $route, Request $request, &$matches = null)
+    public function matches(Route $route, Request $request, &$matches = null): bool|int
     {
         $path = $request->path() == '/' ? '/' : '/' . $request->path();
-
-        if(!str_contains(strtolower($path), $this->basePath))
-        {
-            $path = $this->basePath . $path;
-        }
+        $path = str_replace(strtolower($this->getBasePath()), '', strtolower($path));
 
         if(!str_starts_with($path, '/'))
         {
             $path = '/' . $path;
         }
 
-        $path = strtolower($path);
-
         $regex = $route->getCompiled()->getRegex();
-
-        $regexEncoded = str_replace('-', '\-', $this->basePath);
 
         /* Route:  /runs/{id}
          * Regex: {^/runs/(?P<id>[^/]++)$}sDu
          * Path: /runs/435
          *
          * If we have a subfolder we need to append the subfolder:
-         * to regex: {^/sub-folder/runs/(?P<id>[^/]++)$}sDu
-         * to path: /sub-folder/runs/435
+         * to regex: {^/runs/(?P<id>[^/]++)$}sDu
+         * to path: /sub-folder/runs/435 but sub-folder has been replaced before
          */
-        $regex = str_replace('{^', '{^' . $regexEncoded, $regex);
 
         $regex = preg_replace('/$/','i', $regex);
-
-        $val =  preg_match($regex, $path, $matches);
-
-        if($val == 0)
-        {
-            //dd("did not match: $regex -> $path");
-        }
-
-        return $val;
+        return preg_match($regex, $path, $matches);
     }
 
     public function getBasePath() : string
