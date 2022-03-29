@@ -54,7 +54,15 @@ class DesensitizedUriValidator implements ValidatorInterface
 
         $regexEncoded = str_replace('-', '\-', $this->basePath);
 
-        $regex = str_replace('^', "{$regexEncoded}", $regex);
+        /* Route:  /runs/{id}
+         * Regex: {^/runs/(?P<id>[^/]++)$}sDu
+         * Path: /runs/435
+         *
+         * If we have a subfolder we need to append the subfolder:
+         * to regex: {^/sub-folder/runs/(?P<id>[^/]++)$}sDu
+         * to path: /sub-folder/runs/435
+         */
+        $regex = str_replace('{^', '{^' . $regexEncoded, $regex);
 
         $regex = preg_replace('/$/','i', $regex);
 
